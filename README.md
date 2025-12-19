@@ -54,9 +54,10 @@ A React movie trivia game that challenges you to connect movies and actors using
       touch .env
       ```
    
-   e. Add your token to the `.env` file:
+   e. Add your configuration to the `.env` file:
       ```
       REACT_APP_TMDB_READ_ACCESS_TOKEN=your_actual_read_access_token_here
+      REACT_APP_TMDB_BASE_URL=https://api.themoviedb.org/3
       ```
       
       **Important:** Replace `your_actual_read_access_token_here` with your actual token from TMDB.
@@ -70,9 +71,10 @@ A React movie trivia game that challenges you to connect movies and actors using
 
 ## 🔐 Environment Variables
 
-This project requires the following environment variable:
+This project requires the following environment variables:
 
 - `REACT_APP_TMDB_READ_ACCESS_TOKEN` - Your TMDB API Read Access Token (Bearer Token)
+- `REACT_APP_TMDB_BASE_URL` - The TMDB API base URL (default: https://api.themoviedb.org/3)
 
 **Security Note:** Never commit your `.env` file to GitHub. The `.env` file is included in `.gitignore` to prevent accidental exposure of your API credentials.
 
