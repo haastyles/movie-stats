@@ -1,70 +1,155 @@
-# movie-stats
+# 🎬 Lights! Camera! Action! 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React movie trivia game that challenges you to connect movies and actors using The Movie Database (TMDB) API.
+
+## 🎮 How to Play
+
+1. Start by entering a movie title
+2. Name an actor from that movie
+3. Name another movie that actor was in
+4. Keep the chain going as long as you can!
+5. Race against the clock - you have limited time per turn
+
+## 🚀 Local Setup
+
+### Prerequisites
+
+- Node.js (v14 or higher)
+- npm or yarn
+- A TMDB API account
+
+### Installation Steps
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd movie-stats
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up your TMDB API credentials**
+   
+   a. Create a TMDB account at [https://www.themoviedb.org/signup](https://www.themoviedb.org/signup)
+   
+   b. Request an API key:
+      - Go to your account settings: [https://www.themoviedb.org/settings/api](https://www.themoviedb.org/settings/api)
+      - Click "Request an API Key"
+      - Choose "Developer" option
+      - Fill out the form with your application details
+   
+   c. Get your Read Access Token (Bearer Token):
+      - After approval, scroll down to the "API Read Access Token" section
+      - Copy the token (it's more secure than the API Key)
+   
+   d. Create a `.env` file in the project root directory:
+      ```bash
+      # Create .env file (Windows)
+      type nul > .env
+      
+      # Create .env file (Mac/Linux)
+      touch .env
+      ```
+   
+   e. Add your token to the `.env` file:
+      ```
+      REACT_APP_TMDB_READ_ACCESS_TOKEN=your_actual_read_access_token_here
+      ```
+      
+      **Important:** Replace `your_actual_read_access_token_here` with your actual token from TMDB.
+
+4. **Start the development server**
+   ```bash
+   npm start
+   ```
+   
+   The app will open in your browser at [http://localhost:3000](http://localhost:3000)
+
+## 🔐 Environment Variables
+
+This project requires the following environment variable:
+
+- `REACT_APP_TMDB_READ_ACCESS_TOKEN` - Your TMDB API Read Access Token (Bearer Token)
+
+**Security Note:** Never commit your `.env` file to GitHub. The `.env` file is included in `.gitignore` to prevent accidental exposure of your API credentials.
+
+## 🛠️ Technologies Used
+
+- React (Create React App)
+- Formik (Form management)
+- TMDB API
+- CSS3
 
 ## Available Scripts
 
-In the project directory, you can run:
-
 ### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Runs the app in development mode at [http://localhost:3000](http://localhost:3000). The page will reload when you make changes.
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Launches the test runner in interactive watch mode.
 
 ### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Builds the app for production to the `build` folder. The build is optimized and minified.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🎯 Features
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Real-time movie and actor data from TMDB
+- Timed gameplay with score tracking
+- Input validation to ensure correct answers
+- Dynamic image loading for movies and actors
+- Responsive design
 
-### `npm run eject`
+## 📝 Project Structure
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```
+movie-stats/
+├── public/
+├── src/
+│   ├── components/
+│   │   ├── searchActor.jsx
+│   │   ├── searchMovie.jsx
+│   │   ├── searchPage.jsx
+│   │   └── searchResults.jsx
+│   ├── services/
+│   │   └── tmdbApi.js
+│   ├── App.js
+│   ├── App.css
+│   └── index.js
+├── .env (create this file - not in repo)
+├── .gitignore
+├── package.json
+└── README.md
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 🐛 Troubleshooting
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### API Connection Errors
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+If you see "Error connecting to TMDB API":
+1. Verify your `.env` file exists in the project root
+2. Check that your token is correctly formatted (no extra spaces)
+3. Ensure you're using the Read Access Token, not the API Key
+4. Restart the development server after adding/changing the `.env` file
 
-## Learn More
+### Application Won't Start
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. Delete `node_modules` and `package-lock.json`
+2. Run `npm install` again
+3. Make sure you're using a compatible Node.js version
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 📄 License
 
-### Code Splitting
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 🤝 Contributing
 
-### Analyzing the Bundle Size
+Contributions, issues, and feature requests are welcome!
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This ReadME was written by Copilot.
