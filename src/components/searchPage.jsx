@@ -15,7 +15,12 @@ function SearchPage({
         <>
             <Formik 
                 initialValues={{ searchMovie: '', searchActor: '' }}
-                onSubmit={submitSearch}
+                onSubmit={(values, actions) => {
+                    // Only submit if there's actual input
+                    if (turn === 'movie' && values.searchMovie.trim() === '') return;
+                    if (turn === 'actor' && values.searchActor.trim() === '') return;
+                    submitSearch(values, actions);
+                }}
             >
                 <Form
                     style={
