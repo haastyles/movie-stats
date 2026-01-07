@@ -1,4 +1,6 @@
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form } from 'formik';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete'; 
 
 function SearchPage({
     turn,
@@ -9,8 +11,14 @@ function SearchPage({
     actorId,
     error,
     count,
-    time
+    time,
+    searchResults,
+    onChange,
+    onInputChange,
+    loading,
+    inputValue
 }) {
+
     return (
         <>
             <Formik 
@@ -33,23 +41,41 @@ function SearchPage({
                     }
                 >
                     {turn === "movie" ? (
-                        <div>
-                            <Field 
-                                type="text" 
-                                name="searchMovie" 
-                                placeholder="Search for a movie..."
-                                className="search-input"
-                            />
-                        </div>
+                        <Autocomplete
+                            key="movie-autocomplete"
+                            freeSolo
+                            options={searchResults}
+                            loading={loading}
+                            value={null}
+                            inputValue={inputValue}
+                            onChange={onChange}
+                            onInputChange={onInputChange}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    placeholder="Search for a movie..."
+                                    className="search-input"
+                                />
+                            )}
+                        />
                     ) : (
-                        <div>
-                            <Field 
-                                type="text" 
-                                name="searchActor" 
-                                placeholder="Search for an actor..."
-                                className="search-input"
-                            />
-                        </div>
+                        <Autocomplete
+                            key="actor-autocomplete"
+                            freeSolo
+                            options={searchResults}
+                            loading={loading}
+                            value={null}
+                            inputValue={inputValue}
+                            onChange={onChange}
+                            onInputChange={onInputChange}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    placeholder="Search for an actor..."
+                                    className="search-input"
+                                />
+                            )}
+                        />
                     )}
                     <button type="submit" className="search-button">Search</button>
                 </Form>

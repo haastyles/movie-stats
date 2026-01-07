@@ -35,8 +35,7 @@
   border-radius: 4px;
   padding: 0.5rem 1rem;
   margin: 1rem 0;
-  width: 100%;
-  max-width: 400px;
+  width: 30vw !important;
   font-family: inherit;
 }
 
@@ -48,6 +47,7 @@
   outline: none;
   border-color: #fff;
   box-shadow: 0 0 0 2px rgba(97, 218, 251, 0.3);
+  width: 100%;
 }
 
 button {
