@@ -15,16 +15,12 @@ function App() {
   const [actorName, setActorName] = useState(null);
   const [actorId, setActorId] = useState(null);
   const [actorPhoto, setActorPhoto] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [time, setTime] = useState(20);
   const [inputValue, setInputValue] = useState('');
   const [debouncedValue, setDebouncedValue] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-
-  // Memoized ID lists to avoid recalculation
-  const castList = actors.map(actor => actor.id);
-  const actingCredits = movies.map(movie => movie.id);
 
   useEffect(() => {
       // Debounce input every 2 seconds
@@ -51,9 +47,11 @@ function App() {
   // calling tmdbApi to fetch search results depending on turn
   const fetchSearchResults = async (inputValue) => {
       try {
+          console.log('Fetching search results for:', inputValue, 'as', turn);
           if (turn === 'movie') {
               const data = await tmdbApi.getMovieIdentity(inputValue);
               if (data.results.length > 0) {
+                  data.results.sort((a, b) => b.vote_count - a.vote_count);
                   const results = data.results.slice(0, 5).map(movie => 
                       movie.title + ' (' + (movie.release_date?.substring(0, 4) || 'N/A') + ')'
                   );
@@ -62,6 +60,7 @@ function App() {
           } else if (turn === 'actor') {
               const data = await tmdbApi.getActorIdentity(inputValue);
               if (data.results.length > 0) {
+                  data.results.sort((a, b) => b.popularity - a.popularity);
                   const results = data.results.slice(0, 5).map(actor => 
                       actor.name + ' (' + actor.known_for_department + ')'
                   );
@@ -69,6 +68,7 @@ function App() {
               }
           }
           setLoading(false);
+          console.log('search results: ', searchResults);
       } catch (error) {
           console.error("Error fetching data:", error);
           setSearchResults([]);
@@ -88,7 +88,8 @@ function App() {
             const newMovieId = data.results[0].id;
             setMovieId(newMovieId);
             setMoviePoster(data.results[0].poster_path);
-
+            console.log('Fetched movie ID:', newMovieId);
+            console.log('Poster path:', data.results[0].poster_path);
             // Only increment count if this is not the first movie and the movie is in the valid movies list
             setCount(prevCount => {
               if (prevCount > 0 && movies.some(movie => movie.id === newMovieId)) {
@@ -110,7 +111,7 @@ function App() {
     };
 
     fetchMovieIdentity();
-  }, [movieTitle, movies]);
+  }, [movieTitle]);
 
   // fetch TMDB actor id by their name
   useEffect(() => {
@@ -143,7 +144,7 @@ function App() {
     };
 
     fetchActorName();
-  }, [actorName, actors]);
+  }, [actorName]);
 
   // Fetch actors when movieId changes
   useEffect(() => {
@@ -198,30 +199,19 @@ function App() {
     return () => clearInterval(timerId);
   }, [time]);
 
-  // Handle turn progression and reset for next input
-  const handleTurnChange = (value) => {
-    const cleanValue = value.replace(/\s*\([^)]*\)\s*$/, '').trim();
-    
-    if (turn === 'movie') {
-      setMovieTitle(cleanValue);
-      setTurn('actor');
-    } else if (turn === 'actor') {
-      setActorName(cleanValue);
-      setTurn('movie');
-    }
-    
-    setInputValue('');
-    setSearchResults([]);
-    setTime(20);
-  }
-
   // Handle form submission - just update state, let useEffect handle API calls
   const submitSearch = (values, actions) => {
-    const value = turn === 'movie' ? values.searchMovie : values.searchActor;
-    if (value.trim() === '') return;
-    
-    handleTurnChange(value);
+    if (turn === 'movie') {
+      setMovieTitle(values.searchMovie);
+      setTurn('actor');
+    } else if (turn === 'actor') {
+      setActorName(values.searchActor);
+      setTurn('movie');
+    }
     actions.resetForm();
+    setInputValue(''); // Clear autocomplete input
+    setSearchResults([]); // Clear search results
+    setTime(20); // Reset timer on each submission
   }
 
   return (
