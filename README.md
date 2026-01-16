@@ -116,7 +116,7 @@ movie-stats/
 │   ├── components/
 │   │   ├── searchActor.jsx
 │   │   ├── searchMovie.jsx
-│   │   ├── searchPage.jsx
+│   │   ├── SearchBar.jsx
 │   │   └── searchResults.jsx
 │   ├── services/
 │   │   └── tmdbApi.js

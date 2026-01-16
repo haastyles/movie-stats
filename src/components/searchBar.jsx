@@ -2,7 +2,7 @@ import { Formik, Form } from 'formik';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete'; 
 
-function SearchPage({
+function SearchBar({
     turn,
     submitSearch,
     actingCredits,
@@ -46,7 +46,7 @@ function SearchPage({
                             freeSolo
                             options={searchResults}
                             loading={loading}
-                            value={null}
+                            value={''}
                             inputValue={inputValue}
                             onChange={onChange}
                             onInputChange={onInputChange}
@@ -64,7 +64,7 @@ function SearchPage({
                             freeSolo
                             options={searchResults}
                             loading={loading}
-                            value={null}
+                            value={''}
                             inputValue={inputValue}
                             onChange={onChange}
                             onInputChange={onInputChange}
@@ -84,4 +84,4 @@ function SearchPage({
     )
 }
 
-export default SearchPage;
+export default SearchBar;
