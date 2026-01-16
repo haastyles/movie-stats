@@ -1,9 +1,18 @@
+/* Color Palette:
+   - #1A1A2E - Dark navy (header background)
+   - #EAEAEA - Light gray (light backgrounds)
+   - #E94560 - Cinema red (buttons, highlights)
+   - #16213E - Deep blue (primary text)
+   - #0F3460 - Royal blue (accents, borders)
+   - #FFF - White (text on dark backgrounds)
+*/
+
 .App {
   text-align: center;
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #1A1A2E;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -11,7 +20,7 @@
   justify-content: flex-start;
   padding-top: 2rem;
   font-size: calc(8px + 2vmin);
-  color: white;
+  color: #FFF;
 }
 
 .App-header ol li, p {
@@ -19,19 +28,22 @@
 }
 
 .App-link {
-  color: #61dafb;
+  color: #E94560;
 }
 
 .game-rules {
   text-align: left;
-  max-width: 600px;
+  color: #16213E;
+  background-color: #EAEAEA;
+  border-radius: 5px;
+  padding: 1rem;
 }
 
 .search-input {
   font-size: calc(8px + 2vmin);
-  color: white;
-  background-color: #3a3f47;
-  border: 2px solid #61dafb;
+  color: #16213E;
+  background-color: #EAEAEA;
+  border: 2px solid #0F3460;
   border-radius: 4px;
   padding: 0.5rem 1rem;
   margin: 1rem 0;
@@ -40,20 +52,20 @@
 }
 
 .search-input::placeholder {
-  color: #8a8f98;
+  color: #0F3460;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #fff;
-  box-shadow: 0 0 0 2px rgba(97, 218, 251, 0.3);
+  border-color: #E94560;
+  box-shadow: 0 0 0 2px rgba(233, 69, 96, 0.3);
   width: 100%;
 }
 
 button {
   font-size: calc(8px + 1.5vmin);
-  color: white;
-  background-color: #61dafb;
+  color: #FFF;
+  background-color: #E94560;
   border: none;
   border-radius: 4px;
   padding: 0.75rem 2rem;
@@ -65,7 +77,7 @@ button {
 }
 
 button:hover {
-  background-color: #4fa8c5;
+  background-color: #c73550;
 }
 
 button:active {
@@ -82,12 +94,13 @@ button:active {
 .result-container img {
   max-width: 300px;
   border-radius: 8px;
+  border: 3px solid #0F3460;
 }
 
 .result-container button {
   font-size: calc(8px + 1.5vmin);
-  color: white;
-  background-color: #61dafb;
+  color: #FFF;
+  background-color: #E94560;
   border: none;
   border-radius: 4px;
   padding: 0.75rem 2rem;
@@ -98,7 +111,7 @@ button:active {
 }
 
 .result-container button:hover {
-  background-color: #4fa8c5;
+  background-color: #c73550;
 }
 
 .result-container button:active {

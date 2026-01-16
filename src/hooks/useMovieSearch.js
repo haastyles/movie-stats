@@ -1,26 +1,29 @@
 import { useState, useEffect } from 'react';
 import tmdbApi from '../services/tmdbApi';
 
-export function useMovieSearch(movieTitle, movies) {
+export function useMovieSearch(movieInput, movies) {
     const [movieId, setMovieId] = useState(null);
     const [moviePoster, setMoviePoster] = useState(null);
+    const [movieTitle, setMovieTitle] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        if (!movieTitle) {
+        if (!movieInput) {
             setMovieId(null);
             setMoviePoster(null);
+            setMovieTitle(null);
             return;
         }
         
         const fetchMovieIdentity = async () => {
             try {
                 setLoading(true);
-                const data = await tmdbApi.getMovieIdentity(movieTitle);
+                const data = await tmdbApi.getMovieIdentity(movieInput);
                 if (data.results?.length > 0) {
                     setMovieId(data.results[0].id);
                     setMoviePoster(data.results[0].poster_path);
+                    setMovieTitle(data.results[0].title);
                 }
                 setError(null);
             } catch (err) {
@@ -32,7 +35,7 @@ export function useMovieSearch(movieTitle, movies) {
         };
 
         fetchMovieIdentity();
-    }, [movieTitle]);
+    }, [movieInput]);
 
-    return { movieId, moviePoster, loading, error };
+    return { movieId, moviePoster, movieTitle, loading, error };
 }

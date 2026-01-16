@@ -21,8 +21,8 @@ function SearchPage() {
         resetGame: resetGameState
     } = useGameState();
 
-    const [movieTitle, setMovieTitle] = useState(null);
-    const [actorName, setActorName] = useState(null);
+    const [movieInput, setMovieInput] = useState(null);
+    const [actorInput, setActorInput] = useState(null);
     const [inputValue, setInputValue] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -34,16 +34,18 @@ function SearchPage() {
     const { 
         movieId,
         moviePoster,
+        movieTitle,
         loading: movieLoading,
         error: movieError
-    } = useMovieSearch(movieTitle, movies);
+    } = useMovieSearch(movieInput, movies);
 
     const {
         actorId,
         actorPhoto,
+        actorName,
         loading: actorLoading,
         error: actorError
-    } = useActorSearch(actorName);
+    } = useActorSearch(actorInput);
 
     // Increment count when movieId is fetched successfully
     useEffect(() => {
@@ -161,10 +163,10 @@ function SearchPage() {
     // Handle form submission - just update state, let useEffect handle API calls
     const submitSearch = (values, actions) => {
         if (turn === 'movie') {
-            setMovieTitle(values.searchMovie);
+            setMovieInput(values.searchMovie);
             setTurn('actor');
         } else if (turn === 'actor') {
-            setActorName(values.searchActor);
+            setActorInput(values.searchActor);
             setTurn('movie');
         }
         actions.resetForm();
@@ -192,7 +194,7 @@ function SearchPage() {
                 count={count}
                 castList={actors.map(actor => actor.id)}
                 actingCredits={movies.map(movie => movie.id)}
-                loading={loading}
+                loading={loading || movieLoading || actorLoading}
                 error={error}
                 movieId={movieId}
                 actorId={actorId}
@@ -203,8 +205,8 @@ function SearchPage() {
                 time={time}
                 resetGame={() => {
                     resetGameState();
-                    setMovieTitle(null);
-                    setActorName(null);
+                    setMovieInput(null);
+                    setActorInput(null);
                     setError(null);
                     setSearchResults([]);
                     setTime(20);
@@ -228,10 +230,10 @@ function SearchPage() {
                         const cleanValue = value.replace(/\s*\([^)]*\)\s*$/, '').trim();
                         
                         if (turn === 'movie') {
-                            setMovieTitle(cleanValue);
+                            setMovieInput(cleanValue);
                             setTurn('actor');
                         } else if (turn === 'actor') {
-                            setActorName(cleanValue);
+                            setActorInput(cleanValue);
                             setTurn('movie');
                         }
                         setInputValue(''); // Clear autocomplete input

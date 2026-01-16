@@ -55,6 +55,7 @@ function SearchBar({
                                     {...params}
                                     placeholder="Search for a movie..."
                                     className="search-input"
+                                    autoFocus
                                 />
                             )}
                         />
@@ -73,6 +74,7 @@ function SearchBar({
                                     {...params}
                                     placeholder="Search for an actor..."
                                     className="search-input"
+                                    autoFocus
                                 />
                             )}
                         />
