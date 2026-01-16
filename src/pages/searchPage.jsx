@@ -207,7 +207,6 @@ function SearchPage() {
                     setActorName(null);
                     setError(null);
                     setSearchResults([]);
-                    setInputValue(null);
                     setTime(20);
                 }}
             />
