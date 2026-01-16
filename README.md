@@ -114,10 +114,17 @@ movie-stats/
 ├── public/
 ├── src/
 │   ├── components/
-│   │   ├── searchActor.jsx
-│   │   ├── searchMovie.jsx
-│   │   ├── SearchBar.jsx
+│   │   ├── imageArray.jsx
+│   │   ├── searchBar.jsx
 │   │   └── searchResults.jsx
+│   ├── hooks/
+│   │   ├── useActorSearch.js
+│   │   ├── useDebounce.js
+│   │   ├── useGameState.js
+│   │   ├── useMovieSearch.js
+│   │   └── useTimer.js
+│   ├── pages/
+│   │   └── searchPage.jsx
 │   ├── services/
 │   │   └── tmdbApi.js
 │   ├── App.js
