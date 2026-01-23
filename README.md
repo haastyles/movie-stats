@@ -114,10 +114,20 @@ movie-stats/
 ├── public/
 ├── src/
 │   ├── components/
+│   │   ├── test/
+│   │   │   ├── imageArray.test.jsx
+│   │   │   ├── searchBar.test.jsx
+│   │   │   └── searchResults.test.jsx
 │   │   ├── imageArray.jsx
 │   │   ├── searchBar.jsx
 │   │   └── searchResults.jsx
 │   ├── hooks/
+│   │   ├── test/
+│   │   │   ├── useActorSearch.test.js
+│   │   │   ├── useDebounce.test.js
+│   │   │   ├── useGameState.test.js
+│   │   │   ├── useMovieSearch.test.js
+│   │   │   └── useTimer.test.js
 │   │   ├── useActorSearch.js
 │   │   ├── useDebounce.js
 │   │   ├── useGameState.js
@@ -126,6 +136,8 @@ movie-stats/
 │   ├── pages/
 │   │   └── searchPage.jsx
 │   ├── services/
+│   │   ├── test/
+│   │   │   └── tmdbApi.test.js
 │   │   └── tmdbApi.js
 │   ├── App.js
 │   ├── App.css
@@ -135,6 +147,38 @@ movie-stats/
 ├── package.json
 └── README.md
 ```
+
+## 🧪 Testing
+
+This project uses Jest and React Testing Library for testing.
+
+### Running Tests
+
+```bash
+# Run all tests in watch mode
+npm test
+
+# Run all tests once (CI mode)
+npm test -- --watchAll=false
+
+# Run tests in a specific folder
+npm test -- --testPathPattern="hooks/test"
+npm test -- --testPathPattern="components/test"
+npm test -- --testPathPattern="services/test"
+
+# Run a specific test file
+npm test -- --testPathPattern="useTimer.test"
+```
+
+### Test Structure
+
+Tests are organized in `test/` folders alongside the code they test:
+
+| Folder | Description |
+|--------|-------------|
+| `components/test/` | UI component tests (rendering, user interactions) |
+| `hooks/test/` | Custom hook tests (state management, side effects) |
+| `services/test/` | API service tests (mocked fetch calls) |
 
 ## 🐛 Troubleshooting
 
