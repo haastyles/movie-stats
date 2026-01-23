@@ -190,6 +190,7 @@ function SearchPage() {
             <p>You have 20 seconds each turn. I will be keeping score.</p>
             <p>Current turn: {count}</p>
             <SearchResults
+                className="search-results"
                 turn={turn}
                 count={count}
                 castList={actors.map(actor => actor.id)}
@@ -213,6 +214,7 @@ function SearchPage() {
                 }}
             />
             <SearchBar
+                className="search-bar"
                 turn={turn}
                 count={count}
                 castList={actors.map(actor => actor.id)}
