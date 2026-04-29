@@ -27,7 +27,7 @@ function SearchResults({
     useEffect(() => {
         const interval = setInterval(() => {
             setFailImage(getRandomElement(imageArray()));
-        }, 30000); // 30 seconds
+        }, 300000); // 5 minutes
 
         return () => clearInterval(interval);
     }, []);

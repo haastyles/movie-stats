@@ -80,7 +80,7 @@ describe('SearchResults', () => {
     describe('loading state', () => {
         it('should display loading indicator when loading', () => {
             render(<SearchResults {...defaultProps} loading={true} />);
-            // Add assertion for loading state display
+            expect(screen.getByText(/loading/i)).toBeInTheDocument();
         });
     });
 
@@ -93,7 +93,7 @@ describe('SearchResults', () => {
                     movieTitle="Test Movie"
                 />
             );
-            // Add assertion for movie poster display
+            expect(screen.getByAltText(/test movie/i)).toBeInTheDocument();
         });
 
         it('should display actor photo when available', () => {
@@ -104,7 +104,7 @@ describe('SearchResults', () => {
                     actorName="Test Actor"
                 />
             );
-            // Add assertion for actor photo display
+            expect(screen.getByAltText(/test actor/i)).toBeInTheDocument();
         });
     });
 });

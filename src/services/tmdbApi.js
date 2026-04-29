@@ -2,12 +2,6 @@
 const READ_ACCESS_TOKEN = process.env.REACT_APP_TMDB_READ_ACCESS_TOKEN;
 const BASE_URL = process.env.REACT_APP_TMDB_BASE_URL;
 
-// Debug: Log environment variables (remove after testing)
-console.log('TMDB Config Check:');
-console.log('Base URL:', BASE_URL);
-console.log('Token exists:', !!READ_ACCESS_TOKEN);
-console.log('Token length:', READ_ACCESS_TOKEN?.length);
-
 /**
  * Fetches data from TMDB API
  * @param {string} endpoint - API endpoint (e.g., '/movie/popular')
@@ -27,13 +21,9 @@ const fetchFromTMDB = async (endpoint, params = {}) => {
         'Content-Type': 'application/json',
     };
 
-    console.log('Fetching:', url.toString());
-
     try {
         const response = await fetch(url, { headers });
-        
-        console.log('Response status:', response.status);
-        
+           
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
             console.error('API Error Details:', errorData);
@@ -46,6 +36,7 @@ const fetchFromTMDB = async (endpoint, params = {}) => {
         throw error;
     }
 };
+
 
 // API Methods
 const tmdbApi = {

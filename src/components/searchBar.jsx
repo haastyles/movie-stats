@@ -16,20 +16,22 @@ function SearchBar({
     onChange,
     onInputChange,
     loading,
-    inputValue
+    inputValue,
+    resetGame
 }) {
 
     return (
         <>
             <Formik 
                 initialValues={{ searchMovie: '', searchActor: '' }}
-                onSubmit={(values, actions) => {
+                onSubmit={(values) => {
                     // Only submit if there's actual input
                     if (turn === 'movie' && values.searchMovie.trim() === '') return;
                     if (turn === 'actor' && values.searchActor.trim() === '') return;
-                    submitSearch(values, actions);
+                    submitSearch(values);
                 }}
             >
+                {({ setFieldValue }) => (
                 <Form
                     style={
                         (error || 
@@ -44,12 +46,19 @@ function SearchBar({
                         <Autocomplete
                             key="movie-autocomplete"
                             freeSolo
+                            disabled={loading}
                             options={searchResults}
                             loading={loading}
                             value={''}
                             inputValue={inputValue}
-                            onChange={onChange}
-                            onInputChange={onInputChange}
+                            onChange={(event, value) => {
+                                setFieldValue('searchMovie', value || '');
+                                onChange(event, value);
+                            }}
+                            onInputChange={(event, newInputValue) => {
+                                setFieldValue('searchMovie', newInputValue);
+                                onInputChange(event, newInputValue);
+                            }}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
@@ -63,12 +72,19 @@ function SearchBar({
                         <Autocomplete
                             key="actor-autocomplete"
                             freeSolo
+                            disabled={loading}
                             options={searchResults}
                             loading={loading}
                             value={''}
                             inputValue={inputValue}
-                            onChange={onChange}
-                            onInputChange={onInputChange}
+                            onChange={(event, value) => {
+                                setFieldValue('searchActor', value || '');
+                                onChange(event, value);
+                            }}
+                            onInputChange={(event, newInputValue) => {
+                                setFieldValue('searchActor', newInputValue);
+                                onInputChange(event, newInputValue);
+                            }}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
@@ -79,8 +95,10 @@ function SearchBar({
                             )}
                         />
                     )}
-                    <button type="submit" className="search-button">Search</button>
+                    <button type="submit" className="search-button" disabled={loading}>Search</button>
+                    <button type="button" onClick={resetGame}>Reset Game</button>
                 </Form>
+                )}
             </Formik>
         </>
     )

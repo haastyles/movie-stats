@@ -4,8 +4,8 @@ import SearchBar from '.././components/searchBar';
 import SearchResults from '.././components/searchResults';
 import { useDebounce } from '../hooks/useDebounce';
 import { useTimer } from '../hooks/useTimer';
-import { useMovieSearch } from '../hooks/useMovieSearch';
-import { useActorSearch } from '../hooks/useActorSearch';
+import { useSearch } from '../hooks/useSearch';
+import { useFetchSearchResults } from '../hooks/useFetchSearchResults'; 
 import { useGameState } from '../hooks/useGameState';
 
 function SearchPage() {
@@ -18,41 +18,61 @@ function SearchPage() {
         setMovies,
         actors,
         setActors,
-        resetGame: resetGameState
+        resetGame
     } = useGameState();
 
     const [movieInput, setMovieInput] = useState(null);
     const [actorInput, setActorInput] = useState(null);
+    const [searchType, setSearchType] = useState('movie');
     const [inputValue, setInputValue] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     const debouncedValue = useDebounce(inputValue, 2000);
     const [time, setTime] = useTimer(20);
 
-    const { 
+    const {
         movieId,
         moviePoster,
         movieTitle,
-        loading: movieLoading,
-        error: movieError
-    } = useMovieSearch(movieInput, movies);
-
-    const {
         actorId,
         actorPhoto,
         actorName,
-        loading: actorLoading,
-        error: actorError
-    } = useActorSearch(actorInput);
+        loading: searchLoading
+    } = useSearch({
+        input: searchType === 'movie' ? movieInput : actorInput,
+        turn: searchType,
+        ttl: 86400000 // 1 day
+    });
 
-    // Increment count when movieId is fetched successfully
+    // Gate user input on both fetches: useSearch's identity lookup AND
+    // SearchPage's fetchList for cast/filmography. Without this, a fast
+    // click on the next turn races the previous fetchList and the count
+    // check sees stale movies/actors.
+    const isLoading = loading || searchLoading;
+
+    const {
+        searchResults
+    } = useFetchSearchResults({
+        input: debouncedValue,
+        turn: turn,
+        ttl: 86400000 // 1 day
+    });
+
     useEffect(() => {
-        if (!movieId) return;
-        
+        // Increment count when id is fetched successfully
+        if (!movieId && !actorId) return;
         setCount(prevCount => {
-            if (prevCount > 0 && movies.some(movie => movie.id === movieId)) {
+            if (
+                prevCount > 0 &&
+                searchType === 'movie' &&
+                movies.some(movie => movie.id === movieId)) {
+                return prevCount + 1;
+            } else if (
+                prevCount > 0 &&
+                searchType === 'actor' &&
+                actors.some(actor => actor.id === actorId)
+            ) {
                 return prevCount + 1;
             } else if (prevCount === 0) {
                 // First movie always counts
@@ -60,71 +80,19 @@ function SearchPage() {
             }
             return prevCount;
         });
-    }, [movieId]);
-
-    // Increment count when actorId is fetched successfully
-    useEffect(() => {
-        if (!actorId) return;
-        
-        setCount(prevCount => {
-            if (actors.some(actor => actor.id === actorId)) {
-                return prevCount + 1;
-            }
-            return prevCount;
-        });
-    }, [actorId]);
-
-    // call tmdbAPI when debouncedValue changes
-    useEffect(() => {
-        if (debouncedValue) {
-            setLoading(true);
-            fetchSearchResults(debouncedValue);
-        } else {
-            setSearchResults([]);
-        }
-    }, [debouncedValue]);
-
-    // calling tmdbApi to fetch search results depending on turn
-    const fetchSearchResults = async (inputValue) => {
-        try {
-            console.log('Fetching search results for:', inputValue, 'as', turn);
-            if (turn === 'movie') {
-                const data = await tmdbApi.getMovieIdentity(inputValue);
-                if (data.results.length > 0) {
-                    data.results.sort((a, b) => b.vote_count - a.vote_count);
-                    const results = data.results.slice(0, 5).map(movie => 
-                        movie.title + ' (' + (movie.release_date?.substring(0, 4) || 'N/A') + ')'
-                    );
-                    setSearchResults(results);
-                }
-            } else if (turn === 'actor') {
-                const data = await tmdbApi.getActorIdentity(inputValue);
-                if (data.results.length > 0) {
-                    data.results.sort((a, b) => b.popularity - a.popularity);
-                    const results = data.results.slice(0, 5).map(actor => 
-                        actor.name + ' (' + actor.known_for_department + ')'
-                    );
-                    setSearchResults(results);
-                }
-            }
-            setLoading(false);
-            console.log('search results: ', searchResults);
-        } catch (error) {
-            console.error("Error fetching data:", error);
-            setSearchResults([]);
-            setLoading(false);
-        }
-    }
-
-    // Fetch actors when movieId changes
-    useEffect(() => {
-        if (!movieId) return;
-        
-        const fetchActors = async () => {
+        // Fetch lists when id changes
+        const fetchList = async () => {
             try {
                 setLoading(true);
-                const data = await tmdbApi.getMovieCredits(movieId);
-                setActors(data.cast);
+                if (searchType === 'movie') {
+                    if (!movieId) {return;};
+                    const data = await tmdbApi.getMovieCredits(movieId);
+                    setActors(data.cast);
+                } else if (searchType === 'actor') {
+                    if (!actorId) {return;};
+                    const data = await tmdbApi.getActorMovieCredits(actorId);
+                    setMovies(data.cast);
+                }
                 setError(null);
             } catch (err) {
                 setError(err.message);
@@ -135,44 +103,32 @@ function SearchPage() {
             }
         };
 
-        fetchActors();
-    }, [movieId]);
+        fetchList();
+    }, [movieId, actorId]);
 
-    // Fetch movies when actorId changes
-    useEffect(() => {
-        if (!actorId) return;
-        
-        const fetchMovies = async () => {
-            try {
-                setLoading(true);
-                const data = await tmdbApi.getActorMovieCredits(actorId);
-                setMovies(data.cast);
-                setError(null);
-            } catch (err) {
-                setError(err.message);
-                setCount(0);
-                setTime(1);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchMovies();
-    }, [actorId]);
+    const handleReset = () => {
+        resetGame();
+        setMovieInput(null);
+        setActorInput(null);
+        setSearchType('movie');
+        setError(null);
+        setTime(20);
+    };
 
     // Handle form submission - just update state, let useEffect handle API calls
-    const submitSearch = (values, actions) => {
+    const submitSearch = (values) => {
+        if (isLoading) return;
         if (turn === 'movie') {
+            setSearchType('movie');
             setMovieInput(values.searchMovie);
             setTurn('actor');
         } else if (turn === 'actor') {
+            setSearchType('actor');
             setActorInput(values.searchActor);
             setTurn('movie');
         }
-        actions.resetForm();
-        setInputValue(''); // Clear autocomplete input
-        setSearchResults([]); // Clear search results
-        setTime(20); // Reset timer on each submission
+        setInputValue('');
+        setTime(20);
     }
 
     return (
@@ -184,7 +140,7 @@ function SearchPage() {
                     <li>Give me a movie title.</li>
                     <li>Give me an actor from the movie.</li>
                     <li>Give me another movie the actor was in.</li>
-                    <li>Repeat steps 1-3 as long as you can!</li>
+                    <li>Repeat steps 2-3 as long as you can!</li>
                 </ol>
             </div>
             <p>You have 20 seconds each turn. I will be keeping score.</p>
@@ -195,7 +151,7 @@ function SearchPage() {
                 count={count}
                 castList={actors.map(actor => actor.id)}
                 actingCredits={movies.map(movie => movie.id)}
-                loading={loading || movieLoading || actorLoading}
+                loading={isLoading}
                 error={error}
                 movieId={movieId}
                 actorId={actorId}
@@ -204,14 +160,7 @@ function SearchPage() {
                 moviePoster={moviePoster}
                 actorPhoto={actorPhoto}
                 time={time}
-                resetGame={() => {
-                    resetGameState();
-                    setMovieInput(null);
-                    setActorInput(null);
-                    setError(null);
-                    setSearchResults([]);
-                    setTime(20);
-                }}
+                resetGame={handleReset}
             />
             <SearchBar
                 className="search-bar"
@@ -219,28 +168,28 @@ function SearchPage() {
                 count={count}
                 castList={actors.map(actor => actor.id)}
                 actingCredits={movies.map(movie => movie.id)}
-                loading={loading}
+                loading={isLoading}
                 error={error}
                 movieId={movieId}
                 actorId={actorId}
                 time={time}
                 searchResults={searchResults}
                 inputValue={inputValue}
+                resetGame={handleReset}
                 onChange={(event, value) => {
+                    if (isLoading) return;
                     if (value) {
-                        // Strip out the parenthetical info (year/department) from the selection
-                        const cleanValue = value.replace(/\s*\([^)]*\)\s*$/, '').trim();
-                        
                         if (turn === 'movie') {
-                            setMovieInput(cleanValue);
+                            setSearchType('movie');
+                            setMovieInput(value);
                             setTurn('actor');
                         } else if (turn === 'actor') {
-                            setActorInput(cleanValue);
+                            setSearchType('actor');
+                            setActorInput(value);
                             setTurn('movie');
                         }
-                        setInputValue(''); // Clear autocomplete input
-                        setSearchResults([]); // Clear search results
-                        setTime(20); // Reset timer
+                        setInputValue('');
+                        setTime(20);
                     }
                 }}
                 onInputChange={(event, newInputValue) => {
